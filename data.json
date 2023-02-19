@@ -1,0 +1,40 @@
+{
+  "clients": [
+    {
+      "customer": "Customer 1",
+      "links": "Link 1",
+      "bestList": ["test", "test2342"],
+      "middleList": ["test", "testfsleisn8eur", "tes234t2"],
+      "maybeList": ["test", "test432"],
+      "brandsList": ["test", "test2342"],
+      "minusWordsList": ["test", "tes23423t2"]
+    },
+    {
+      "customer": "Customer 2",
+      "links": "Link 2",
+      "bestList": ["test", "testseefsef2"],
+      "middleList": ["test", "testfsleisn8eur", "tes234t2"],
+      "maybeList": ["test", "tessefseft2"],
+      "brandsList": ["test", "testsfesef2"],
+      "minusWordsList": ["test", "testsfefse2"]
+    },
+    {
+      "customer": "Customer 3",
+      "links": "Link 3",
+      "bestList": ["test", "testefsf2"],
+      "middleList": ["test", "testfsleisn8eur", "tes234t2"],
+      "maybeList": ["test", "testfsef2"],
+      "brandsList": ["test", "testsef2"],
+      "minusWordsList": ["test", "tessefseft2"]
+    },
+    {
+      "customer": "Customer 4",
+      "links": "Link 4",
+      "bestList": ["test", "test2"],
+      "middleList": ["test", "testfsleisn8eur", "tes234t2"],
+      "maybeList": ["test", "test2"],
+      "brandsList": ["test", "test2"],
+      "minusWordsList": ["test", "test2"]
+    }
+  ]
+}
