@@ -1,34 +1,52 @@
 const tableBody = document.getElementById("table-body");
 const buttons = ["Best", "Middle", "Maybe", "Brands", "Minus Words"];
 
+const Data = {
+  clients: [
+    {
+      customer: "Acme Corp",
+      links: "https://www.acme.com/keywords",
+      bestList: ["best1", "best2", "best3"],
+      middleList: ["middle1", "middle2", "middle3"],
+      maybeList: ["maybe1", "maybe2", "maybe3"],
+      brandsList: ["brand1", "brand2", "brand3"],
+      minusWordsList: ["minus1", "minus2", "minus3"],
+    },
+  ],
+};
+
+const tableData = JSON.parse(localStorage.getItem("Data"));
+if (tableData) {
+  console.log(tableData);
+  populateTable(tableData);
+} else {
+  console.error("Table data not found.");
+}
+
 function buttonClick(rowData, button) {
   const buttonData = {};
   buttonData.listName = button.toLowerCase();
+  buttonData.customerName = rowData["customer"];
 
   switch (button) {
     case "Best":
       buttonData.keywords = rowData["bestList"];
-      buttonData.customerName = rowData["customer"];
       copyListToClipboard(buttonData);
       break;
     case "Middle":
       buttonData.keywords = rowData["middleList"];
-      buttonData.customerName = rowData["customer"];
       copyListToClipboard(buttonData);
       break;
     case "Maybe":
       buttonData.keywords = rowData["maybeList"];
-      buttonData.customerName = rowData["customer"];
       copyListToClipboard(buttonData);
       break;
     case "Brands":
       buttonData.keywords = rowData["brandsList"];
-      buttonData.customerName = rowData["customer"];
       copyListToClipboard(buttonData);
       break;
     case "Minus Words":
       buttonData.keywords = rowData["minusWordsList"];
-      buttonData.customerName = rowData["customer"];
       copyListToClipboard(buttonData);
       break;
 
@@ -55,29 +73,28 @@ const copyListToClipboard = ({ keywords, customerName, listName }) => {
     });
 };
 
-fetch("data.json")
-  .then((response) => response.json())
-  .then((tableData) => {
-    tableData.clients.forEach((rowData) => {
-      const row = document.createElement("tr");
-      const customerCell = document.createElement("td");
-      const linksCell = document.createElement("td");
-      const copyingKeywordsCell = document.createElement("td");
+function populateTable(tableData) {
+  tableData.clients.forEach((rowData) => {
+    const row = document.createElement("tr");
+    const customerCell = document.createElement("td");
+    const linksCell = document.createElement("td");
+    const copyingKeywordsCell = document.createElement("td");
+    const linksCellLink = document.createElement("a");
+    customerCell.textContent = rowData.customer;
+    linksCellLink.textContent = "Modify Keywords Lists";
+    linksCellLink.href = rowData.links;
+    linksCell.appendChild(linksCellLink);
 
-      customerCell.textContent = rowData.customer;
-      linksCell.textContent = rowData.links;
-
-      buttons.forEach((button) => {
-        const btn = document.createElement("button");
-        btn.innerText = button;
-        btn.addEventListener("click", () => buttonClick(rowData, button));
-        copyingKeywordsCell.appendChild(btn);
-      });
-
-      row.appendChild(customerCell);
-      row.appendChild(linksCell);
-      row.appendChild(copyingKeywordsCell);
-      tableBody.appendChild(row);
+    buttons.forEach((button) => {
+      const btn = document.createElement("button");
+      btn.innerText = button;
+      btn.addEventListener("click", () => buttonClick(rowData, button));
+      copyingKeywordsCell.appendChild(btn);
     });
-  })
-  .catch((error) => console.error(error));
+
+    row.appendChild(customerCell);
+    row.appendChild(linksCell);
+    row.appendChild(copyingKeywordsCell);
+    tableBody.appendChild(row);
+  });
+}
