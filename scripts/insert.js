@@ -1,7 +1,7 @@
 const createListButton = document.getElementById("create-list");
 const nameInput = document.getElementById("name");
 const phrasesInput = document.getElementById("phrases");
-const messageDiv = document.getElementById("message");
+const prompt = document.querySelector(".prompt");
 const listsDiv = document.getElementById("lists");
 
 createListButton.addEventListener("click", createList);
@@ -11,21 +11,36 @@ function createList() {
   const phrases = phrasesInput.value
     .split("\n")
     .filter((phrase) => phrase.trim() !== "");
-  const listId = generateId(30);
-  const list = { name, phrases };
+  const links = generateId(30); // unique link
+  const list = {
+    customer: name,
+    links,
+    keywords: phrases,
+    bestList: [],
+    middleList: [],
+    maybeList: [],
+    brandsList: [],
+    minusWordsList: [],
+  };
 
-  // Store the list in local storage
-  localStorage.setItem(listId, JSON.stringify(list));
+  // Add the new list to the local storage data
+  let data = JSON.parse(localStorage.getItem("Data"));
+  if (!data) {
+    data = { clients: [] };
+  }
+  data.clients.push(list);
+  localStorage.setItem("Data", JSON.stringify(data));
 
   // Display message to user
-  messageDiv.textContent = "List created successfully!";
+  prompt.textContent = "List created successfully!";
+  prompt.classList.remove("hidden");
+  setTimeout(() => {
+    prompt.classList.add("hidden");
+  }, 5000); // hide after 2 seconds
 
   // Clear the input fields
   nameInput.value = "";
   phrasesInput.value = "";
-
-  // Show the list on the page
-  showLists();
 }
 
 function generateId(length) {
@@ -37,19 +52,3 @@ function generateId(length) {
   }
   return id;
 }
-
-function showLists() {
-  listsDiv.innerHTML = "";
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    const list = JSON.parse(localStorage.getItem(key));
-    const name = list.name;
-    const phrases = list.phrases;
-    const listDiv = document.createElement("div");
-    listDiv.innerHTML = `<h3>${name}</h3><p>${phrases.join(", ")}</p>`;
-    listsDiv.appendChild(listDiv);
-  }
-}
-
-// Show the lists when the page loads
-showLists();

@@ -6,6 +6,7 @@ const Data = {
     {
       customer: "Acme Corp",
       links: "https://www.acme.com/keywords",
+      keywords: ["keyword 1", "keyword 2"],
       bestList: ["best1", "best2", "best3"],
       middleList: ["middle1", "middle2", "middle3"],
       maybeList: ["maybe1", "maybe2", "maybe3"],

@@ -4,17 +4,29 @@
     <meta charset="utf-8" />
     <title>List Creator</title>
     <script src="../scripts/insert.js" defer></script>
+    <link rel="stylesheet" href="../styles/insert.css" />
   </head>
   <body>
-    <h1>List Creator</h1>
-    <form>
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" /><br /><br />
-      <label for="phrases">Key Phrases:</label>
-      <textarea id="phrases" name="phrases"></textarea><br /><br />
-      <button type="button" id="create-list">Confirm</button>
+    <nav id="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><h1>Add Customers and Keywords</h1></li>
+      </ul>
+    </nav>
+
+    <form id="form">
+      <div class="left-column">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+        <br />
+        <label for="phrases">Key Phrases:</label>
+        <textarea id="phrases" name="phrases" required></textarea>
+      </div>
+      <div class="right-column">
+        <button type="submit" id="create-list">Confirm</button>
+      </div>
     </form>
     <div id="message"></div>
     <div id="lists"></div>
+    <p class="prompt hidden"></p>
   </body>
 </html>
