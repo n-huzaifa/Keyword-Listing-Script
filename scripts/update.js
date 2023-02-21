@@ -7,7 +7,6 @@ const customerData = data.clients.filter((customerData) =>
   customerData ? customerData.links == link : { error: "No link found" }
 )[0];
 
-console.log(customerData);
 const {
   keywords,
   bestList,
@@ -17,7 +16,43 @@ const {
   minusWordsList,
 } = customerData;
 
-splitString();
+// get a reference to the table
+const table = document.getElementById("myTable");
+
+// iterate through the keywords list and create a row for each keyword
+keywords.forEach((keyword) => {
+  // create a new table row
+  const row = document.createElement("tr");
+
+  // create the "Keywords" cell and add it to the row
+  const keywordsCell = document.createElement("td");
+  keywordsCell.textContent = keyword;
+  row.appendChild(keywordsCell);
+
+  // create the "Listing Assortment" cell and add it to the row
+  const listingAssortmentCell = document.createElement("td");
+  row.appendChild(listingAssortmentCell);
+
+  // create the four buttons and add them to the "Listing Assortment" cell
+  const bestButton = document.createElement("button");
+  bestButton.textContent = "Best";
+  listingAssortmentCell.appendChild(bestButton);
+
+  const middleButton = document.createElement("button");
+  middleButton.textContent = "Middle";
+  listingAssortmentCell.appendChild(middleButton);
+
+  const maybeButton = document.createElement("button");
+  maybeButton.textContent = "Maybe";
+  listingAssortmentCell.appendChild(maybeButton);
+
+  const brandsButton = document.createElement("button");
+  brandsButton.textContent = "Brands";
+  listingAssortmentCell.appendChild(brandsButton);
+
+  // add the row to the table
+  table.appendChild(row);
+});
 
 function splitString() {
   // Create a new string with each word wrapped in a <span> tag

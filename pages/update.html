@@ -9,9 +9,31 @@
     <link rel="stylesheet" href="../styles/update.css" />
   </head>
   <body>
-    <h1>Enter a string to split into span tags:</h1>
-    <div id="output"></div>
-    <h2>Selected Words:</h2>
-    <ul id="selectedList"></ul>
+    <nav id="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><a class="nav-link" href="/">All Customers</a></li>
+      </ul>
+    </nav>
+    <p class="prompt hidden"></p>
+    <section id="main">
+      <table id="myTable" style="width: 66.67%">
+        <thead>
+          <tr>
+            <th>Keywords</th>
+            <th>Listing Assortment</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="minusWordsList">
+        <h2>Minus Words</h2>
+        <ul>
+          <li>word1</li>
+          <li>word2</li>
+          <li>word3</li>
+          <li>word4</li>
+        </ul>
+      </div>
+    </section>
   </body>
 </html>
