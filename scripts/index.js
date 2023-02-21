@@ -21,7 +21,7 @@ if (tableData) {
   console.log(tableData);
   populateTable(tableData);
 } else {
-  console.error("Table data not found.");
+  console.log("Table is Empty");
 }
 
 function buttonClick(rowData, button) {
@@ -83,7 +83,7 @@ function populateTable(tableData) {
     const linksCellLink = document.createElement("a");
     customerCell.textContent = rowData.customer;
     linksCellLink.textContent = "Modify Keywords Lists";
-    linksCellLink.href = rowData.links;
+    linksCellLink.href = "../pages/update.html?link=" + rowData.links;
     linksCell.appendChild(linksCellLink);
 
     buttons.forEach((button) => {
