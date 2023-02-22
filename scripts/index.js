@@ -1,21 +1,6 @@
 const tableBody = document.getElementById("table-body");
 const buttons = ["Best", "Middle", "Maybe", "Brands", "Minus Words"];
 
-const Data = {
-  clients: [
-    {
-      customer: "Acme Corp",
-      links: "https://www.acme.com/keywords",
-      keywords: ["keyword 1", "keyword 2"],
-      bestList: ["best1", "best2", "best3"],
-      middleList: ["middle1", "middle2", "middle3"],
-      maybeList: ["maybe1", "maybe2", "maybe3"],
-      brandsList: ["brand1", "brand2", "brand3"],
-      minusWordsList: ["minus1", "minus2", "minus3"],
-    },
-  ],
-};
-
 const tableData = JSON.parse(localStorage.getItem("Data"));
 if (tableData) {
   console.log(tableData);

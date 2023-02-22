@@ -1,9 +1,10 @@
 const selectedWords = new Set();
+const buttons = ["Best", "Middle", "Maybe", "Brands"];
 
 const urlParams = new URLSearchParams(window.location.search);
 const link = urlParams.get("link");
-const data = JSON.parse(localStorage.getItem("Data"));
-const customerData = data.clients.filter((customerData) =>
+let data = JSON.parse(localStorage.getItem("Data"));
+let customerData = data.clients.filter((customerData) =>
   customerData ? customerData.links == link : { error: "No link found" }
 )[0];
 
@@ -33,26 +34,78 @@ keywords.forEach((keyword) => {
   const listingAssortmentCell = document.createElement("td");
   row.appendChild(listingAssortmentCell);
 
-  // create the four buttons and add them to the "Listing Assortment" cell
-  const bestButton = document.createElement("button");
-  bestButton.textContent = "Best";
-  listingAssortmentCell.appendChild(bestButton);
-
-  const middleButton = document.createElement("button");
-  middleButton.textContent = "Middle";
-  listingAssortmentCell.appendChild(middleButton);
-
-  const maybeButton = document.createElement("button");
-  maybeButton.textContent = "Maybe";
-  listingAssortmentCell.appendChild(maybeButton);
-
-  const brandsButton = document.createElement("button");
-  brandsButton.textContent = "Brands";
-  listingAssortmentCell.appendChild(brandsButton);
+  buttons.forEach((button) => {
+    const btn = document.createElement("button");
+    btn.innerText = button;
+    btn.addEventListener("click", () => buttonClick(keyword, button));
+    listingAssortmentCell.appendChild(btn);
+  });
 
   // add the row to the table
   table.appendChild(row);
 });
+
+function buttonClick(keyword, button) {
+  data = JSON.parse(localStorage.getItem("Data"));
+  customerData = data.clients.filter((customerData) =>
+    customerData ? customerData.links == link : { error: "No link found" }
+  )[0];
+
+  const buttonData = {};
+  buttonData.keyword = keyword;
+
+  switch (button) {
+    case "Best":
+      buttonData.listName = "bestList";
+      copyKeywordsToList(buttonData);
+      break;
+    case "Middle":
+      buttonData.listName = "middleList";
+      copyKeywordsToList(buttonData);
+      break;
+    case "Maybe":
+      buttonData.listName = "maybeList";
+      copyKeywordsToList(buttonData);
+      break;
+    case "Brands":
+      buttonData.listName = "brandsList";
+      copyKeywordsToList(buttonData);
+      break;
+
+    default:
+      console.log("Button info not correct");
+      break;
+  }
+
+  // update localStorage with the updated data
+  const index = data.clients.findIndex(
+    (clientData) => clientData.links === link
+  );
+  if (index > -1) {
+    data.clients[index] = customerData;
+    localStorage.setItem("Data", JSON.stringify(data));
+  }
+}
+
+function copyKeywordsToList({ listName, keyword }) {
+  let list = customerData[listName];
+  list.push(keyword);
+  // clear the other list arrays
+  Object.keys(customerData).forEach((key) => {
+    if (
+      key !== "keywords" &&
+      key !== "minusWordsList" &&
+      key !== listName &&
+      Array.isArray(customerData[key])
+    ) {
+      const index = customerData[key].indexOf(keyword);
+      if (index > -1) {
+        // only splice array when item is found
+        customerData[key].splice(index, 1); // 2nd parameter means remove one item only
+      }
+    }
+  });
+}
 
 function splitString() {
   // Create a new string with each word wrapped in a <span> tag
