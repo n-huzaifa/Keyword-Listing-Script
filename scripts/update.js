@@ -17,17 +17,52 @@ const {
   minusWordsList,
 } = customerData;
 
+const keywordClick = (word) => {
+  const spans = document.querySelectorAll(".keywordSpan");
+
+  spans.forEach((span) => {
+    console.log(span.textContent.includes(word));
+    if (span.textContent.includes(word)) {
+      span.isClicked = !span.isClicked;
+      span.style.backgroundColor = span.isClicked ? "green" : "";
+      const row = span.parentElement.parentElement;
+      const listingAssortmentCell = row.querySelector("td:last-child");
+      const buttons = listingAssortmentCell.querySelectorAll(
+        `button[data-keyword="${word}"]`
+      );
+
+      buttons.forEach((button) => {
+        button.classList.toggle("hidden-button");
+      });
+    }
+  });
+};
+
 // get a reference to the table
 const table = document.getElementById("myTable");
-
-// iterate through the keywords list and create a row for each keyword
 keywords.forEach((keyword) => {
   // create a new table row
   const row = document.createElement("tr");
 
   // create the "Keywords" cell and add it to the row
   const keywordsCell = document.createElement("td");
-  keywordsCell.textContent = keyword;
+
+  // split the keyword string into an array of words
+  const words = keyword.split(" ");
+
+  // create a span for each word in the keyword string
+  words.forEach((word) => {
+    const wordSpan = document.createElement("span");
+    wordSpan.textContent = word;
+    wordSpan.classList.add("keywordSpan");
+    let isClicked = false;
+
+    // add event listener for click to highlight all the keyword span tags with the same keyword and remove buttons
+    wordSpan.addEventListener("click", () => keywordClick(word));
+
+    keywordsCell.appendChild(wordSpan);
+  });
+
   row.appendChild(keywordsCell);
 
   // create the "Listing Assortment" cell and add it to the row
@@ -37,7 +72,8 @@ keywords.forEach((keyword) => {
   buttons.forEach((button) => {
     const btn = document.createElement("button");
     btn.innerText = button;
-    btn.addEventListener("click", () => buttonClick(keyword, button));
+    btn.dataset.keyword = keyword; // set the data-keyword attribute to the button element
+    btn.addEventListener("click", () => assortmentButtons(keyword, button));
     listingAssortmentCell.appendChild(btn);
   });
 
@@ -45,7 +81,7 @@ keywords.forEach((keyword) => {
   table.appendChild(row);
 });
 
-function buttonClick(keyword, button) {
+function assortmentButtons(keyword, button) {
   data = JSON.parse(localStorage.getItem("Data"));
   customerData = data.clients.filter((customerData) =>
     customerData ? customerData.links == link : { error: "No link found" }
@@ -83,13 +119,17 @@ function buttonClick(keyword, button) {
   );
   if (index > -1) {
     data.clients[index] = customerData;
-    localStorage.setItem("Data", JSON.stringify(data));
+    updateLocalStorage(data);
   }
+}
+
+function updateLocalStorage(data) {
+  localStorage.setItem("Data", JSON.stringify(data));
 }
 
 function copyKeywordsToList({ listName, keyword }) {
   let list = customerData[listName];
-  list.push(keyword);
+  list.add(keyword);
   // clear the other list arrays
   Object.keys(customerData).forEach((key) => {
     if (
@@ -107,61 +147,47 @@ function copyKeywordsToList({ listName, keyword }) {
   });
 }
 
-function splitString() {
-  // Create a new string with each word wrapped in a <span> tag
-  const newString = keywords.map((word) => `<span>${word}</span>`).join(" ");
+// function addToSelectedList() {
+//   // Add the word to the selected words set
+//   const word = this.textContent;
+//   selectedWords.add(word);
 
-  // Populate the viewport with the new string
-  document.getElementById("output").innerHTML = newString;
+//   // Clear the selected list and rebuild it from the set
+//   const selectedList = document.getElementById("selectedList");
+//   selectedList.innerHTML = "";
+//   for (const word of selectedWords) {
+//     const newListItem = document.createElement("li");
+//     newListItem.textContent = word;
+//     newListItem.addEventListener("click", removeFromSelectedList);
+//     selectedList.appendChild(newListItem);
+//   }
 
-  // Add event listeners to each span tag
-  const spans = document.getElementsByTagName("span");
-  for (let i = 0; i < spans.length; i++) {
-    spans[i].addEventListener("click", addToSelectedList);
-  }
-}
+//   // Remove the event listener from the clicked span tag
+//   this.removeEventListener("click", addToSelectedList);
 
-function addToSelectedList() {
-  // Add the word to the selected words set
-  const word = this.textContent;
-  selectedWords.add(word);
+//   // Highlight all span tags with the same word
+//   const spans = document.getElementsByTagName("span");
+//   for (let i = 0; i < spans.length; i++) {
+//     if (spans[i].textContent === word) {
+//       spans[i].classList.add("highlight");
+//     }
+//   }
+// }
 
-  // Clear the selected list and rebuild it from the set
-  const selectedList = document.getElementById("selectedList");
-  selectedList.innerHTML = "";
-  for (const word of selectedWords) {
-    const newListItem = document.createElement("li");
-    newListItem.textContent = word;
-    newListItem.addEventListener("click", removeFromSelectedList);
-    selectedList.appendChild(newListItem);
-  }
+// function removeFromSelectedList() {
+//   // Remove the word from the selected words set
+//   const word = this.textContent;
+//   selectedWords.delete(word);
 
-  // Remove the event listener from the clicked span tag
-  this.removeEventListener("click", addToSelectedList);
+//   // Remove the list item from the selected list
+//   this.parentNode.removeChild(this);
 
-  // Highlight all span tags with the same word
-  const spans = document.getElementsByTagName("span");
-  for (let i = 0; i < spans.length; i++) {
-    if (spans[i].textContent === word) {
-      spans[i].classList.add("highlight");
-    }
-  }
-}
-
-function removeFromSelectedList() {
-  // Remove the word from the selected words set
-  const word = this.textContent;
-  selectedWords.delete(word);
-
-  // Remove the list item from the selected list
-  this.parentNode.removeChild(this);
-
-  // Activate the event listener on all span tags matching the removed word
-  const spans = document.getElementsByTagName("span");
-  for (let i = 0; i < spans.length; i++) {
-    if (spans[i].textContent === word) {
-      spans[i].addEventListener("click", addToSelectedList);
-      spans[i].classList.remove("highlight");
-    }
-  }
-}
+//   // Activate the event listener on all span tags matching the removed word
+//   const spans = document.getElementsByTagName("span");
+//   for (let i = 0; i < spans.length; i++) {
+//     if (spans[i].textContent === word) {
+//       spans[i].addEventListener("click", addToSelectedList);
+//       spans[i].classList.remove("highlight");
+//     }
+//   }
+// }

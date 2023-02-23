@@ -12,6 +12,7 @@ function createList() {
     .split("\n")
     .filter((phrase) => phrase.trim() !== "");
   const links = generateId(30); // unique link
+
   const list = {
     customer: name,
     links,
