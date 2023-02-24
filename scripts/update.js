@@ -1,13 +1,22 @@
+// Define a set to store selected words
 const selectedWords = new Set();
+
+// Define an array of buttons
 const buttons = ["Best", "Middle", "Maybe", "Brands"];
 
+// Parse the URL search params to get the link parameter
 const urlParams = new URLSearchParams(window.location.search);
 const link = urlParams.get("link");
+
+// Retrieve data from localStorage
 let data = JSON.parse(localStorage.getItem("Data"));
+
+// Filter the customerData object from the retrieved data based on the link parameter
 let customerData = data.clients.filter((customerData) =>
   customerData ? customerData.links == link : { error: "No link found" }
 )[0];
 
+// Destructure the customerData object to get the necessary properties
 const {
   keywords,
   bestList,
@@ -17,45 +26,84 @@ const {
   minusWordsList,
 } = customerData;
 
-const keywordClick = (word) => {
-  const spans = document.querySelectorAll(".keywordSpan");
+// Function to handle click events on keyword spans
+const keywordClick = (keyword) => {
+  // Get all the keyword span tags in the table
+  const keywordTd = document.querySelectorAll(".keywordTd");
 
-  spans.forEach((span) => {
-    console.log(span.textContent.includes(word));
-    if (span.textContent.includes(word)) {
-      span.isClicked = !span.isClicked;
-      span.style.backgroundColor = span.isClicked ? "green" : "";
-      const row = span.parentElement.parentElement;
-      const listingAssortmentCell = row.querySelector("td:last-child");
-      const buttons = listingAssortmentCell.querySelectorAll(
-        `button[data-keyword="${word}"]`
-      );
+  // Loop through each keyword span tag
+  keywordTd.forEach((Td) => {
+    // Get all the spans in the keyword span tag
+    const spans = Td.childNodes;
 
-      buttons.forEach((button) => {
-        button.classList.toggle("hidden-button");
+    // Split the keyword string into an array of words
+    const words = keyword.split(" ");
+
+    // Loop through each word in the keyword string
+    words.forEach((splitedWord) => {
+      // Loop through each span tag in the keyword span tag
+      spans.forEach((span) => {
+        // If the text content of the span tag matches the current word in the keyword string
+        if (span.textContent == splitedWord) {
+          // Toggle the isClicked property of the span tag and set its background color accordingly
+          span.isClicked = !span.isClicked;
+          span.style.backgroundColor = span.isClicked ? "green" : "";
+
+          // Get the parent row of the keyword span tag
+          const row = Td.parentElement;
+
+          // Get the last cell in the row (i.e., Listing Assortment cell)
+          const listingAssortmentCell = row.querySelector("td:last-child");
+
+          // Get all the sorting buttons in the Listing Assortment cell
+          const buttons =
+            listingAssortmentCell.querySelectorAll(".sortingButtons");
+
+          // Loop through each sorting button
+          buttons.forEach((button) => {
+            // Get the keyword(s) associated with the button
+            let buttonWords = button.getAttribute("data-keyword");
+            let buttonWordArray = buttonWords.split(" ");
+
+            // Loop through each word in the button keyword(s)
+            buttonWordArray.forEach((buttonWord) => {
+              // If the current word in the button keyword(s) matches the current word in the clicked keyword string
+              if (buttonWord == keyword) {
+                // Toggle the hidden-button class of the button
+                button.classList.toggle("hidden-button");
+              }
+            });
+          });
+
+          return;
+        }
       });
-    }
+    });
   });
 };
 
-// get a reference to the table
+// Get a reference to the table element
 const table = document.getElementById("myTable");
+
+// Loop through each keyword in the customerData object
 keywords.forEach((keyword) => {
-  // create a new table row
+  // Create a new table row
   const row = document.createElement("tr");
 
-  // create the "Keywords" cell and add it to the row
+  // Create the "Keywords" cell and add it to the row
   const keywordsCell = document.createElement("td");
+  keywordsCell.classList.add("keywordTd");
 
-  // split the keyword string into an array of words
+  // Split the keyword string into an array of words
   const words = keyword.split(" ");
 
-  // create a span for each word in the keyword string
+  // Loop through each word in the keyword string
   words.forEach((word) => {
+    // Create a new span tag for the current word
     const wordSpan = document.createElement("span");
     wordSpan.textContent = word;
     wordSpan.classList.add("keywordSpan");
-    let isClicked = false;
+    // let isClicked = false;
 
     // add event listener for click to highlight all the keyword span tags with the same keyword and remove buttons
     wordSpan.addEventListener("click", () => keywordClick(word));
@@ -64,7 +112,6 @@ keywords.forEach((keyword) => {
   });
 
   row.appendChild(keywordsCell);
-
   // create the "Listing Assortment" cell and add it to the row
   const listingAssortmentCell = document.createElement("td");
   row.appendChild(listingAssortmentCell);
@@ -72,7 +119,9 @@ keywords.forEach((keyword) => {
   buttons.forEach((button) => {
     const btn = document.createElement("button");
     btn.innerText = button;
-    btn.dataset.keyword = keyword; // set the data-keyword attribute to the button element
+    btn.classList.add("sortingButtons");
+    btn.dataset.keyword = words.join(" "); // set the data-keyword attribute to the button element
+
     btn.addEventListener("click", () => assortmentButtons(keyword, button));
     listingAssortmentCell.appendChild(btn);
   });
@@ -122,14 +171,14 @@ function assortmentButtons(keyword, button) {
     updateLocalStorage(data);
   }
 }
-
+//updates the data to the local storage
 function updateLocalStorage(data) {
   localStorage.setItem("Data", JSON.stringify(data));
 }
 
 function copyKeywordsToList({ listName, keyword }) {
   let list = customerData[listName];
-  list.add(keyword);
+  list.push(keyword);
   // clear the other list arrays
   Object.keys(customerData).forEach((key) => {
     if (
