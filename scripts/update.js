@@ -158,20 +158,11 @@ keywords.forEach((keyword) => {
   const listingAssortmentCell = document.createElement("td");
   row.appendChild(listingAssortmentCell);
 
-  buttons.forEach((button) => {
-    const btn = document.createElement("button");
-    btn.innerText = button;
-    btn.classList.add("sortingButtons");
-    btn.dataset.keyword = words.join(" "); // set the data-keyword attribute to the button element
-
-    btn.addEventListener("click", () => assortmentButtons(keyword, button));
-    listingAssortmentCell.appendChild(btn);
-  });
+  tableButtons(keyword, words, listingAssortmentCell);
 
   // Check each span if its text matches the word in minusWordsList
   if (inMinusWords) {
     const buttonsRow = row.lastChild;
-    console.log(buttonsRow);
     buttonsRow.childNodes.forEach((btn) => {
       btn.classList.add("hidden-button");
     });
@@ -181,7 +172,37 @@ keywords.forEach((keyword) => {
   table.appendChild(row);
 });
 
+function tableButtons(keyword, words, listingAssortmentCell) {
+  listingAssortmentCell.innerHTML = "";
+  buttons.forEach((button) => {
+    const btn = document.createElement("button");
+    btn.innerText = button;
+    btn.classList.add("sortingButtons");
+
+    // Check each list for the button's keyword
+    if (button === "Best") {
+      bestList.includes(keyword) && btn.classList.add("boldButton");
+    }
+    if (button === "Middle") {
+      middleList.includes(keyword) && btn.classList.add("boldButton");
+    }
+    if (button === "Maybe") {
+      maybeList.includes(keyword) && btn.classList.add("boldButton");
+    }
+    if (button === "Brands") {
+      brandsList.includes(keyword) && btn.classList.add("boldButton");
+    }
+
+    btn.dataset.keyword = words.join(" ");
+    btn.addEventListener("click", () =>
+      assortmentButtons(keyword, button, listingAssortmentCell)
+    );
+    listingAssortmentCell.appendChild(btn);
+  });
+}
+
 function assortmentButtons(keyword, button) {
+  location.reload();
   data = JSON.parse(localStorage.getItem("Data"));
   customerData = data.clients.filter((customerData) =>
     customerData ? customerData.links == link : { error: "No link found" }
@@ -225,8 +246,8 @@ function updateLocalStorage() {
     localStorage.setItem("Data", JSON.stringify(data));
   }
 }
+
 function copyKeywordsToList({ listName, keyword }) {
-  console.log(keyword);
   let list = customerData[listName];
   if (!list.includes(keyword)) {
     // only copy if keyword doesn't exist in list

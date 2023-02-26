@@ -113,3 +113,7 @@ th {
 .highlight {
   background-color: rgba(63, 216, 3, 0.39);
 }
+
+.boldButton {
+  font-weight: bolder;
+}

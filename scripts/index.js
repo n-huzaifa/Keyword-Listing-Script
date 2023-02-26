@@ -3,7 +3,6 @@ const buttons = ["Best", "Middle", "Maybe", "Brands", "Minus Words"];
 
 const tableData = JSON.parse(localStorage.getItem("Data"));
 if (tableData) {
-  console.log(tableData);
   populateTable(tableData);
 } else {
   console.log("Table is Empty");
