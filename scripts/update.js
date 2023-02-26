@@ -11,6 +11,9 @@ const link = urlParams.get("link");
 // Retrieve data from localStorage
 let data = JSON.parse(localStorage.getItem("Data"));
 
+//get minusList from DOM
+let minusList = document.getElementById("minus-words-list");
+
 // Filter the customerData object from the retrieved data based on the link parameter
 let customerData = data.clients.filter((customerData) =>
   customerData ? customerData.links == link : { error: "No link found" }
@@ -26,6 +29,29 @@ const {
   minusWordsList,
 } = customerData;
 
+function showMinusWords() {
+  minusList.innerHTML = "";
+  minusWordsList.forEach((minusWord) => {
+    const listItem = document.createElement("li");
+    const listItemText = document.createTextNode(minusWord);
+    listItem.appendChild(listItemText);
+    const removeButton = document.createElement("button");
+    removeButton.textContent = "Remove";
+    removeButton.addEventListener("click", () => {
+      const index = minusWordsList.indexOf(minusWord);
+      if (index > -1) {
+        minusWordsList.splice(index, 1);
+        minusList.removeChild(listItem);
+        customerData["minusWordsList"] = minusWordsList;
+        updateLocalStorage();
+      }
+      location.reload();
+    });
+    listItem.appendChild(removeButton);
+    minusList.appendChild(listItem);
+  });
+}
+showMinusWords();
 // Function to handle click events on keyword spans
 const keywordClick = (keyword) => {
   // Get all the keyword span tags in the table
@@ -45,9 +71,15 @@ const keywordClick = (keyword) => {
       spans.forEach((span) => {
         // If the text content of the span tag matches the current word in the keyword string
         if (span.textContent == splitedWord) {
+          let clickData = {};
+          clickData.keyword = splitedWord;
+          clickData.listName = "minusWordsList";
           // Toggle the isClicked property of the span tag and set its background color accordingly
           span.isClicked = !span.isClicked;
           span.style.backgroundColor = span.isClicked ? "green" : "";
+
+          // Copy word to minus words list on span click
+          copyKeywordsToList(clickData);
 
           // Get the parent row of the keyword span tag
           const row = Td.parentElement;
@@ -70,7 +102,7 @@ const keywordClick = (keyword) => {
               // If the current word in the button keyword(s) matches the current word in the clicked keyword string
               if (buttonWord == keyword) {
                 // Toggle the hidden-button class of the button
-                button.classList.toggle("hidden-button");
+                button.classList.add("hidden-button");
               }
             });
           });
@@ -80,11 +112,12 @@ const keywordClick = (keyword) => {
       });
     });
   });
+  updateLocalStorage();
+  showMinusWords();
 };
 
 // Get a reference to the table element
 const table = document.getElementById("myTable");
-
 // Loop through each keyword in the customerData object
 keywords.forEach((keyword) => {
   // Create a new table row
@@ -97,21 +130,30 @@ keywords.forEach((keyword) => {
   // Split the keyword string into an array of words
   const words = keyword.split(" ");
 
+  let inMinusWords = false;
   // Loop through each word in the keyword string
   words.forEach((word) => {
     // Create a new span tag for the current word
     const wordSpan = document.createElement("span");
     wordSpan.textContent = word;
     wordSpan.classList.add("keywordSpan");
-    // let isClicked = false;
 
-    // add event listener for click to highlight all the keyword span tags with the same keyword and remove buttons
-    wordSpan.addEventListener("click", () => keywordClick(word));
+    // Check if the current word is in the minusWordsList
+    if (minusWordsList.includes(word)) {
+      inMinusWords = true;
+      wordSpan.isClicked = true;
+      wordSpan.style.backgroundColor = "green";
+      wordSpan.removeEventListener("click", keywordClick);
+    } else {
+      wordSpan.isClicked = false;
+      wordSpan.addEventListener("click", () => keywordClick(word));
+    }
 
     keywordsCell.appendChild(wordSpan);
   });
 
   row.appendChild(keywordsCell);
+
   // create the "Listing Assortment" cell and add it to the row
   const listingAssortmentCell = document.createElement("td");
   row.appendChild(listingAssortmentCell);
@@ -125,6 +167,15 @@ keywords.forEach((keyword) => {
     btn.addEventListener("click", () => assortmentButtons(keyword, button));
     listingAssortmentCell.appendChild(btn);
   });
+
+  // Check each span if its text matches the word in minusWordsList
+  if (inMinusWords) {
+    const buttonsRow = row.lastChild;
+    console.log(buttonsRow);
+    buttonsRow.childNodes.forEach((btn) => {
+      btn.classList.add("hidden-button");
+    });
+  }
 
   // add the row to the table
   table.appendChild(row);
@@ -161,24 +212,26 @@ function assortmentButtons(keyword, button) {
       console.log("Button info not correct");
       break;
   }
-
+  updateLocalStorage();
+}
+//updates the data to the local storage
+function updateLocalStorage() {
   // update localStorage with the updated data
   const index = data.clients.findIndex(
     (clientData) => clientData.links === link
   );
   if (index > -1) {
     data.clients[index] = customerData;
-    updateLocalStorage(data);
+    localStorage.setItem("Data", JSON.stringify(data));
   }
 }
-//updates the data to the local storage
-function updateLocalStorage(data) {
-  localStorage.setItem("Data", JSON.stringify(data));
-}
-
 function copyKeywordsToList({ listName, keyword }) {
+  console.log(keyword);
   let list = customerData[listName];
-  list.push(keyword);
+  if (!list.includes(keyword)) {
+    // only copy if keyword doesn't exist in list
+    list.push(keyword);
+  }
   // clear the other list arrays
   Object.keys(customerData).forEach((key) => {
     if (
@@ -195,48 +248,3 @@ function copyKeywordsToList({ listName, keyword }) {
     }
   });
 }
-
-// function addToSelectedList() {
-//   // Add the word to the selected words set
-//   const word = this.textContent;
-//   selectedWords.add(word);
-
-//   // Clear the selected list and rebuild it from the set
-//   const selectedList = document.getElementById("selectedList");
-//   selectedList.innerHTML = "";
-//   for (const word of selectedWords) {
-//     const newListItem = document.createElement("li");
-//     newListItem.textContent = word;
-//     newListItem.addEventListener("click", removeFromSelectedList);
-//     selectedList.appendChild(newListItem);
-//   }
-
-//   // Remove the event listener from the clicked span tag
-//   this.removeEventListener("click", addToSelectedList);
-
-//   // Highlight all span tags with the same word
-//   const spans = document.getElementsByTagName("span");
-//   for (let i = 0; i < spans.length; i++) {
-//     if (spans[i].textContent === word) {
-//       spans[i].classList.add("highlight");
-//     }
-//   }
-// }
-
-// function removeFromSelectedList() {
-//   // Remove the word from the selected words set
-//   const word = this.textContent;
-//   selectedWords.delete(word);
-
-//   // Remove the list item from the selected list
-//   this.parentNode.removeChild(this);
-
-//   // Activate the event listener on all span tags matching the removed word
-//   const spans = document.getElementsByTagName("span");
-//   for (let i = 0; i < spans.length; i++) {
-//     if (spans[i].textContent === word) {
-//       spans[i].addEventListener("click", addToSelectedList);
-//       spans[i].classList.remove("highlight");
-//     }
-//   }
-// }

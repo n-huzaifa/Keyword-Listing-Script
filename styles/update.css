@@ -84,29 +84,29 @@ th {
   display: none;
 }
 
-#minusWordsList {
+#minusWords {
   padding: 3px;
   width: 33.33%;
   float: right;
-}
-
-#minusWordsList h2 {
   text-align: center;
 }
 
-#minusWordsList ul {
+#minusWords ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-#minusWordsList li {
+#minusWords li {
+  display: flex;
+  justify-content: space-around;
+
   padding: 10px;
   background-color: #eee;
   border-bottom: 1px solid #ccc;
 }
 
-#minusWordsList li:last-child {
+#minusWords li:last-child {
   border-bottom: none;
 }
 
