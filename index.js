@@ -67,7 +67,7 @@ function populateTable(tableData) {
     const linksCellLink = document.createElement("a");
     customerCell.textContent = rowData.customer;
     linksCellLink.textContent = "Modify Keywords Lists";
-    linksCellLink.href = "../pages/update.html?link=" + rowData.links;
+    linksCellLink.href = "./update.html?link=" + rowData.links;
     linksCell.appendChild(linksCellLink);
 
     buttons.forEach((button) => {
