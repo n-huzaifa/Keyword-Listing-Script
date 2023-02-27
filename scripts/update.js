@@ -28,6 +28,15 @@ const {
   brandsList,
   minusWordsList,
 } = customerData;
+function removeMinusWord(word) {
+  const index = minusWordsList.indexOf(word);
+  if (index > -1) {
+    minusWordsList.splice(index, 1);
+    customerData["minusWordsList"] = minusWordsList;
+    updateLocalStorage();
+    showMinusWords();
+  }
+}
 
 function showMinusWords() {
   minusList.innerHTML = "";
@@ -38,19 +47,13 @@ function showMinusWords() {
     const removeButton = document.createElement("button");
     removeButton.textContent = "Remove";
     removeButton.addEventListener("click", () => {
-      const index = minusWordsList.indexOf(minusWord);
-      if (index > -1) {
-        minusWordsList.splice(index, 1);
-        minusList.removeChild(listItem);
-        customerData["minusWordsList"] = minusWordsList;
-        updateLocalStorage();
-      }
-      location.reload();
+      removeMinusWord(minusWord);
     });
     listItem.appendChild(removeButton);
     minusList.appendChild(listItem);
   });
 }
+
 showMinusWords();
 // Function to handle click events on keyword spans
 const keywordClick = (keyword) => {
@@ -171,9 +174,13 @@ keywords.forEach((keyword) => {
   // add the row to the table
   table.appendChild(row);
 });
-
 function tableButtons(keyword, words, listingAssortmentCell) {
   listingAssortmentCell.innerHTML = "";
+
+  const handleClick = (button) => {
+    assortmentButtons(keyword, words, button);
+  };
+
   buttons.forEach((button) => {
     const btn = document.createElement("button");
     btn.innerText = button;
@@ -194,22 +201,18 @@ function tableButtons(keyword, words, listingAssortmentCell) {
     }
 
     btn.dataset.keyword = words.join(" ");
-    btn.addEventListener("click", () =>
-      assortmentButtons(keyword, button, listingAssortmentCell)
-    );
+    btn.addEventListener("click", () => handleClick(button));
     listingAssortmentCell.appendChild(btn);
   });
 }
 
-function assortmentButtons(keyword, button) {
-  location.reload();
-  data = JSON.parse(localStorage.getItem("Data"));
-  customerData = data.clients.filter((customerData) =>
+function assortmentButtons(keyword, words, button) {
+  const data = JSON.parse(localStorage.getItem("Data"));
+  const customerData = data.clients.filter((customerData) =>
     customerData ? customerData.links == link : { error: "No link found" }
   )[0];
 
-  const buttonData = {};
-  buttonData.keyword = keyword;
+  const buttonData = { keyword };
 
   switch (button) {
     case "Best":
@@ -228,13 +231,20 @@ function assortmentButtons(keyword, button) {
       buttonData.listName = "brandsList";
       copyKeywordsToList(buttonData);
       break;
-
     default:
       console.log("Button info not correct");
       break;
   }
+
   updateLocalStorage();
+
+  // Update the UI
+  const listingAssortmentCell = document.getElementById(
+    "listingAssortmentCell"
+  );
+  tableButtons(keyword, words, listingAssortmentCell);
 }
+
 //updates the data to the local storage
 function updateLocalStorage() {
   // update localStorage with the updated data
