@@ -22,6 +22,7 @@
   font-weight: bold;
   font-size: 16px;
 }
+
 .prompt {
   position: fixed;
   bottom: 10px;
@@ -43,6 +44,7 @@
 
 #main {
   display: flex;
+  position: relative; /* Make the position relative for child elements */
 }
 
 table {
@@ -55,6 +57,10 @@ th,
 td {
   text-align: center;
   padding: 8px;
+}
+
+td {
+  min-width: 200px;
 }
 
 tr:nth-child(even) {
@@ -87,7 +93,8 @@ th {
 #minusWords {
   padding: 3px;
   width: 33.33%;
-  float: right;
+  position: absolute; /* Change float to position:absolute */
+  right: 0; /* Position to the right */
   text-align: center;
 }
 
