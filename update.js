@@ -75,8 +75,8 @@ const keywordClick = (keyword) => {
           clickData.keyword = splitedWord;
           clickData.listName = "minusWordsList";
           // Toggle the isClicked property of the span tag and set its background color accordingly
-          span.isClicked = !span.isClicked;
-          span.style.backgroundColor = span.isClicked ? "green" : "";
+
+          span.style.backgroundColor = "green";
 
           // Copy word to minus words list on span click
           copyKeywordsToList(clickData);
