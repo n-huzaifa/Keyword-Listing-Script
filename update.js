@@ -80,6 +80,7 @@ const keywordClick = (keyword) => {
 
           // Copy word to minus words list on span click
           copyKeywordsToList(clickData);
+          deleteSimilarWordsFromLists(splitedWord);
 
           // Get the parent row of the keyword span tag
           const row = Td.parentElement;
@@ -268,4 +269,16 @@ function copyKeywordsToList({ listName, keyword }) {
       }
     }
   });
+}
+
+function deleteSimilarWordsFromLists(keyword) {
+  const dataLists = ["bestList", "maybeList", "middleList", "brandsList"];
+  dataLists.forEach((dataList) => {
+    customerData[dataList] = customerData[dataList].filter((words) => {
+      const wordsArray = words?.split(" ");
+      return !wordsArray.includes(keyword);
+    });
+  });
+  updateLocalStorage();
+  showMinusWords();
 }
