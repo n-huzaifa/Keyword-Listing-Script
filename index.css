@@ -1,3 +1,18 @@
+#clear-storage {
+  width: 20%;
+  margin-left: 40%;
+  margin-right: 40%;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #ff9f9f;
+  color: #c50000;
+  font-weight: bold;
+  font-size: large;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
 #nav {
   background-color: #f2f2f2;
   padding: 10px;

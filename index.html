@@ -16,6 +16,7 @@
         </li>
       </ul>
     </nav>
+    <button id="clear-storage">Clear Storage</button>
     <p class="prompt hidden"></p>
     <table class="customer-table">
       <thead>
@@ -27,5 +28,12 @@
       </thead>
       <tbody id="table-body"></tbody>
     </table>
+    <script>
+      const clearStorageButton = document.querySelector("#clear-storage");
+      clearStorageButton.addEventListener("click", () => {
+        localStorage.clear();
+        location.reload();
+      });
+    </script>
   </body>
 </html>
