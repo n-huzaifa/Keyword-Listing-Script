@@ -11,7 +11,7 @@ function createList() {
   const phrases = phrasesInput.value
     .split("\n")
     .filter((phrase) => phrase.trim() !== "");
-  const links = generateId(30); // unique link
+  const links = generateLink(30); // unique link
 
   const list = {
     customer: name,
@@ -29,27 +29,31 @@ function createList() {
   if (!data) {
     data = { clients: [] };
   }
-  data.clients.push(list);
-  localStorage.setItem("Data", JSON.stringify(data));
+  if (name !== "" && phrases !== "") {
+    data.clients.push(list);
+    localStorage.setItem("Data", JSON.stringify(data));
 
-  // Display message to user
-  prompt.textContent = "List created successfully!";
-  prompt.classList.remove("hidden");
-  setTimeout(() => {
-    prompt.classList.add("hidden");
-  }, 5000); // hide after 2 seconds
+    // Display message to user
+    prompt.textContent = "List created successfully!";
+    prompt.classList.remove("hidden");
+    setTimeout(() => {
+      prompt.classList.add("hidden");
+    }, 5000); // hide after 2 seconds
 
-  // Clear the input fields
-  nameInput.value = "";
-  phrasesInput.value = "";
+    window.location.replace("./update.html?link=" + links);
+
+    // Clear the input fields
+    nameInput.value = "";
+    phrasesInput.value = "";
+  }
 }
 
-function generateId(length) {
+function generateLink(length) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let id = "";
+  let link = "";
   for (let i = 0; i < length; i++) {
-    id += characters.charAt(Math.floor(Math.random() * characters.length));
+    link += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-  return id;
+  return link;
 }
