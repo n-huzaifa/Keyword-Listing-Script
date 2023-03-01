@@ -9,7 +9,7 @@
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .nav-item {
@@ -17,6 +17,7 @@
 }
 
 .nav-link {
+  padding: 9px;
   text-decoration: none;
   color: #333;
   font-weight: bold;
@@ -44,7 +45,7 @@
 
 #main {
   display: flex;
-  position: relative; /* Make the position relative for child elements */
+  position: relative;
 }
 
 table {
@@ -91,10 +92,9 @@ th {
 }
 
 #minusWords {
-  padding: 3px;
   width: 33.33%;
-  position: absolute; /* Change float to position:absolute */
-  right: 0; /* Position to the right */
+  position: absolute;
+  right: 0;
   text-align: center;
 }
 

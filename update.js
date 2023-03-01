@@ -274,6 +274,7 @@ function copyKeywordsToList({ listName, keyword }) {
 function deleteSimilarWordsFromLists(keyword) {
   const dataLists = ["bestList", "maybeList", "middleList", "brandsList"];
   dataLists.forEach((dataList) => {
+    // filter the arrays with matching keywords
     customerData[dataList] = customerData[dataList].filter((words) => {
       const wordsArray = words?.split(" ");
       return !wordsArray.includes(keyword);
