@@ -29,7 +29,8 @@ function createList() {
   if (!data) {
     data = { clients: [] };
   }
-  if (name !== "" && phrases !== "") {
+
+  if (name !== "" || phrases !== "") {
     data.clients.push(list);
     localStorage.setItem("Data", JSON.stringify(data));
 
